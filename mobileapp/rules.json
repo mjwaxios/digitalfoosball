@@ -1,9 +1,9 @@
 {
 	"rulesets": {
 		"default":{
-			"min": 6,
+			"min": 10,
 			"diff": 1,
-			"max": 6
+			"max": 10
 		},
 		"dtfl":{
 			"min": 5,

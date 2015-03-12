@@ -21,7 +21,7 @@ df.summary = (function() {
     } else if(msg.game.tweetURL == -2) {
       tweetMsg = "";
     } else if(msg.game.tweetURL.length > 5) {
-      tweetMsg = '<a href="' + msg.game.tweetURL + '" class=\"js_target\">Yeah. Tweet wurde gesendet.</a>';
+      tweetMsg = '<a href="' + msg.game.tweetURL + '" class=\"js_target\">Yeah. Tweet was delivered.</a>';
     } else {
       tweetMsg = "Tweet wird gesendet…";
     }

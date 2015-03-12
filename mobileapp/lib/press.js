@@ -1,6 +1,6 @@
-var sys = require("sys"),
+var sys = require("util"),
     http = require("http"),
-    OAuth= require("oauth").OAuth,
+    OAuth= require("oauth"),
     mustache = require("mustache"),
     config = require("./config").config,
     locales = require("./locales").locales,
@@ -17,37 +17,53 @@ te.subscribe("referee:finalwhistle", function(game) {
   var data = {
         id: new Date(game.start).getTime(),
         players: {
-          winner: (home_won ? game.players.home : game.players.visitors).join(" " + locales["global.concat"] + " "),
-          loser: (!home_won ? game.players.home : game.players.visitors).join(" " + locales["global.concat"] + " ")
+          winner: (home_won ? game.players.home : game.players.visitors).join(" " + locales.global['concat'] + " "),
+          loser: (!home_won ? game.players.home : game.players.visitors).join(" " + locales.global['concat'] + " ")
         },
         goals: goals,
         hashtags: config.twitter.hashtags || []
       },
-      tweet = mustache.to_html(locales[["press.tweet.", game.players.home.concat(game.players.visitors).length, "players"].join("")], data);
+      tweet = mustache.to_html(locales.press.tweet[[game.players.home.concat(game.players.visitors).length, "players"].join("")], data);
+      sys.debug(tweet);
 
-  oAuth = new OAuth(
-    "http://twitter.com/oauth/request_token",
-    "http://twitter.com/oauth/access_token",
-    config.twitter.consumerKey,
-    config.twitter.consumerSecret,
-    "1.0A", null, "HMAC-SHA1"
-  );
+  var oauth = null;
 
-  oAuth.post(
-    "http://api.twitter.com/1/statuses/update.json?trim_user=true",
-    config.twitter.accessToken,
-    config.twitter.accessTokenSecret,
-    {"status": tweet},
-    function(error, data) {
+  try {
+    oauth = new OAuth.OAuth(
+      'https://api.twitter.com/oauth/request_token',
+      'https://api.twitter.com/oauth/access_token',
+      config.twitter.consumerKey,
+      config.twitter.consumerSecret,
+      '1.0A',
+      null,
+      'HMAC-SHA1'
+    );
+
+  } catch(err) {
+      sys.debug('error: '+err);
+  }
+
+  try {
+    oauth.post(
+      'https://api.twitter.com/1.1/statuses/update.json?trim_user=true',
+      config.twitter.accessToken,
+      config.twitter.accessTokenSecret,
+      {"status": tweet},
+      function(error, data, response) {
       if (error) {
+        sys.debug(data);
         sys.debug(sys.inspect(error));
         te.publish("press:wrote", "-1");
       } else {
         sys.debug(data);
         te.publish("press:wrote", "https://twitter.com/#!/" + config.twitter.userId + "/status/" + JSON.parse(data).id_str);
-      };
-    }
-  );
+      }
+    }); 
+
+  } catch(err) {
+      sys.debug('error: '+err);
+  }
+
 });
 
 te.subscribe("referee:openingwhistle", function(game) {

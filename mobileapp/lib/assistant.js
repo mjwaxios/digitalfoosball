@@ -1,4 +1,4 @@
-var sys = require("sys"),
+var sys = require("util"),
     http = require("http"),
     fs = require("fs"),
     config = require("./config").config,
@@ -43,6 +43,7 @@ te.subscribe("referee:finalwhistle", function(game) {
 
 te.subscribe("referee:fastgoal", function(goal) {
   saveDoc(goal);
+
 });
 
 te.subscribe("referee:update", function(backup) {

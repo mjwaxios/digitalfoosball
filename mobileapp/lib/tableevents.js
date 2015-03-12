@@ -1,3 +1,5 @@
+var sys = require("util");
+
 exports.TableEvents = (function() {
   var subscriptions = {};
 
@@ -9,7 +11,9 @@ exports.TableEvents = (function() {
   };
 
   this.subscribe = function(e, cb) {
+    sys.debug("Enter subscribe function: " + e);
     __subscribe(e, cb, false);
+    sys.debug("Leaving subscribe function: " + e);
   };
 
   this.subscribeOnce = function(e, cb) {
@@ -17,6 +21,7 @@ exports.TableEvents = (function() {
   };
 
   this.publish = function(events) {
+    sys.debug("Enter publish function: " + events);
     var args = Array.prototype.slice.call(arguments, 1);
     events.replace(/(\s)\s*/g, "$1").split(" ").forEach(function(e) {
       subscriptions[e] && subscriptions[e].forEach(function(obj, index) {
@@ -24,6 +29,7 @@ exports.TableEvents = (function() {
         obj.once && subscriptions[e].splice(index, 1);
       });
     });
+    sys.debug("Leaving publish function: " + events);
   };
 
   return this;
