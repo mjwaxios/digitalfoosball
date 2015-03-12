@@ -19,7 +19,7 @@
 // Uncomment when using WIFLY:
 // Note that the Digital Foosball table requires a modified version of the WiFly library,
 // see the Wiki for details.
-#include "WiFly.h"
+//#include "WiFly.h"
 
 
 /****************
@@ -53,6 +53,8 @@ boolean associated = false;
 boolean connected = false;
 int failures = 0;
 long checkCount = 0;
+
+int goalAState = 0, goalALastState = 0, goalBState = 0, goalBLastState = 0;
 
 #if defined(RFID_A_PIN) && defined(RFID_B_PIN)
 	// RFID buffers
@@ -438,7 +440,8 @@ void resetGoal(int goalPin)
 	int resetTries = 0;
 	do
 	{
-		digitalWrite(goalPin == GOAL_A_PIN ? RESET_A_PIN : RESET_B_PIN, HIGH);
+		goalPin == GOAL_A_PIN ? checkGoalA() : checkGoalB();
+                digitalWrite(goalPin == GOAL_A_PIN ? RESET_A_PIN : RESET_B_PIN, HIGH);
 		delay(10);
 		digitalWrite(goalPin == GOAL_A_PIN ? RESET_A_PIN : RESET_B_PIN, LOW);
 		delay(10);
@@ -487,6 +490,11 @@ void setup()
 
 	pinMode(GOAL_A_PIN, INPUT);
 	pinMode(GOAL_B_PIN, INPUT);
+        pinMode(NOT_GOAL_A_PIN, OUTPUT);
+	pinMode(NOT_GOAL_B_PIN, OUTPUT);
+	pinMode(INV_GOAL_A_PIN, INPUT);
+	pinMode(INV_GOAL_B_PIN, INPUT);
+	
 	pinMode(RESET_A_PIN, OUTPUT);
 	pinMode(RESET_B_PIN, OUTPUT);
 	#if defined(RFID_A_PIN) && defined(RFID_B_PIN)
@@ -495,7 +503,11 @@ void setup()
 	#endif
 	pinMode(LED_PIN, OUTPUT);
 
-	digitalWrite(GOAL_A_PIN, LOW);
+        //Turn on pullup
+	digitalWrite(INV_GOAL_A_PIN, HIGH);
+        digitalWrite(INV_GOAL_B_PIN, HIGH);
+        
+        digitalWrite(GOAL_A_PIN, LOW);
 	digitalWrite(GOAL_B_PIN, LOW);
 	digitalWrite(RESET_A_PIN, LOW);
 	digitalWrite(RESET_B_PIN, LOW);
@@ -539,11 +551,67 @@ void setup()
 	LOG("Initialization done.\n");
 }
 
+void checkGoalA()
+{
+        goalAState = digitalRead(INV_GOAL_A_PIN);
+        if (goalAState == LOW)
+        {
+            digitalWrite(NOT_GOAL_A_PIN, HIGH);
+        }
+        else 
+        {
+            digitalWrite(NOT_GOAL_A_PIN, LOW);
+        }
+        if (goalAState && !goalALastState) {
+            LOG("Goal A inverter cleared\n");
+        }
+        if (!goalAState && goalALastState) {
+            LOG("Goal A scored\n");
+        }
+        goalALastState = goalAState;
+}
+
+void checkGoalB() 
+{
+        goalBState = digitalRead(INV_GOAL_B_PIN);
+        if (goalBState == LOW)
+        {
+            digitalWrite(NOT_GOAL_B_PIN, HIGH);
+        }
+        else 
+        {
+            digitalWrite(NOT_GOAL_B_PIN, LOW);
+        }
+        if (goalBState && !goalBLastState) {
+            LOG("Goal B inverter cleared\n");
+        }
+        if (!goalBState && goalBLastState) {
+            LOG("Goal B score\n");
+        }
+        goalBLastState = goalBState;
+
+}
+
 void loop()
 {
-	// Analyze inputs whether there is a goal
-
-
+	
+        
+  
+        // Analyze inputs whether there is a goal
+        checkGoalA();
+        checkGoalB();
+                
+        //if (digitalRead(INV_GOAL_B_PIN) == LOW) 
+        //{
+        //    digitalWrite(NOT_GOAL_B_PIN, HIGH);
+        //}
+        //else
+        //{
+        //    digitalWrite(NOT_GOAL_B_PIN, LOW);
+        //    retval = retval && true;
+        //}
+        
+        
 	if (digitalRead(GOAL_A_PIN) == HIGH)
 	{
 		handleGoal(GOAL_A_PIN);
@@ -577,5 +645,6 @@ void loop()
 	delayMicroseconds(10);
 	checkCount = (checkCount + 1) % 2000000L;
 }
+
 
 

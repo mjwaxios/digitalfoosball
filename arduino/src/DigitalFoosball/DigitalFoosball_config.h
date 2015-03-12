@@ -44,15 +44,19 @@ int SERVER_PORT = 80;
 char CONTEXT[] = "";
 
 // Pin constants, change if you modified the hardware schematic
-#define GOAL_A_PIN 2
-#define GOAL_B_PIN 4
-#define RESET_A_PIN 3
-#define RESET_B_PIN 5
+#define INV_GOAL_A_PIN 1
+#define NOT_GOAL_A_PIN 2
+#define GOAL_A_PIN 3
+#define RESET_A_PIN 4
+#define INV_GOAL_B_PIN 8
+#define NOT_GOAL_B_PIN 9
+#define GOAL_B_PIN 10
+#define RESET_B_PIN 11
 #define RFID_A_PIN 6
 #define RFID_B_PIN 7
 
 // Standard LED pin 13 used by Spi
-#define LED_PIN 8
+#define LED_PIN 12
 
 
 /*******************
@@ -76,3 +80,4 @@ char CONTEXT[] = "";
 // Define to enable output messages on Serial
 // Use #define to enable, #undef to disable
 #define DEBUG_APP
+
