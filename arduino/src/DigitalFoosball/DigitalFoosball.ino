@@ -71,7 +71,7 @@ int goalAState = 0, goalALastState = 0, goalBState = 0, goalBLastState = 0;
 
 // Debugging
 #ifdef DEBUG_APP
-	#define LOG(message) (Serial.print(message), delay(500))
+	#define LOG(message) (Serial.print(message), delay(50))
 #else
 	#define LOG(message) (((0)))
 #endif
@@ -297,7 +297,7 @@ void handleGoal(int goalPin)
 		#elif defined(INTERNET_WIFLY)
 			success = wiFly.findInResponse("200 OK", 5000);
 		#else
-			delay(500);
+			delayMicroseconds(1);
 			success = true;
 		#endif
 
@@ -643,7 +643,7 @@ void loop()
 	#endif
 
 	//delayMicroseconds(1);
-	checkCount = (checkCount + 1) % 2000000L;
+	//checkCount = (checkCount + 1) % 2000000L;
 }
 
 
