@@ -28,7 +28,7 @@ class DigitalFoosballSimulator(object):
         conn.request("POST", context, params, headers)
         return conn.getresponse()       
 
-    def sendVistorGoal(self):
+    def sendVisitorGoal(self):
         response = self._sendRequest("visitors")
         print response.status, response.reason
 
@@ -36,7 +36,7 @@ class DigitalFoosballSimulator(object):
         response = self._sendRequest("home")
         print response.status, response.reason
 
-    def addRFIDVistor(self, id):
+    def addRFIDVisitor(self, id):
         response = self._sendRequest("visitors", id)
         print response.status, response.reason
 
@@ -48,9 +48,9 @@ if __name__ == "__main__":
 
     sim = DigitalFoosballSimulator()
 
-    sim.sendVistorGoal()
+    sim.sendVisitorGoal()
 
     for x in range(10):
         time.sleep(2)
-        sim.sendVistorGoal()
+        sim.sendVisitorGoal()
     
