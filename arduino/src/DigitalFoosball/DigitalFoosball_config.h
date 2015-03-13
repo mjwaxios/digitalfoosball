@@ -52,8 +52,8 @@ char CONTEXT[] = "";
 #define NOT_GOAL_B_PIN 9
 #define GOAL_B_PIN 10
 #define RESET_B_PIN 11
-#define RFID_A_PIN 6
-#define RFID_B_PIN 7
+//#define RFID_A_PIN 6
+//#define RFID_B_PIN 7
 
 // Standard LED pin 13 used by Spi
 #define LED_PIN 12
