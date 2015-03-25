@@ -4,6 +4,7 @@ import os, sys, time
 import logging
 import threading
 import foosball_utils
+import signal
 
 class SerialGoalReader(object):
     def __init__ (self, port="/dev/ttyACM0", server_ip="192.168.1.9", server_port=80):
@@ -80,12 +81,17 @@ class SerialGoalReader(object):
         self.serialThread.start()
 
 if __name__ == "__main__":
-
+    
     reader = SerialGoalReader()
+    
+    keepRunning = True
+    def handleSignal():
+        keepRunning = False
 
     reader.start()
 
-    time.sleep(15)
-
+    while keepRunning:
+        time.sleep(0.5)    
+    
     reader.stop()
 
