@@ -1,10 +1,10 @@
 {
   "locale": "en_US",
-  "cdn": "http://cdn.yourdomain.com",
+  "cdn": "",
   "rev": "dev",
   "ga": "",
   "server": {
-    "port": 3000,
+    "port": 80,
     "socketport": 3001
   },
   "socketconf": {
@@ -14,7 +14,7 @@
   "couchdb": {
     "user": "",
     "password": "",
-    "host": "127.0.0.1",
+    "host": "",
     "port": 5984,
     "database": "digitalfoosball"
   },
@@ -26,11 +26,20 @@
   "ruleset": "default",
   "twitter": {
     "userId": "",
-    "hashtags": ["df"],
+    "hashtags": [""],
     "consumerKey": "",
     "consumerSecret": "",
     "accessToken": "",
     "accessTokenSecret": ""
+  },
+  "slack": {
+    "user": "foosball table",
+    "emoji": ":soccer:",
+    "channel": "#foosball",
+    "host": "hooks.slack.com",
+    "port": 443,
+    "path": "/"
   }
+
 }
 

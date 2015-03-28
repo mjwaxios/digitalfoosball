@@ -1,7 +1,7 @@
 {
   "locale": "en_EN",
   "global": {
-		"title": "Digital Foosball",
+		"title": "Axios Digital Foosball",
   	"concat": "and"
 	},
 	"toolbar": {
@@ -10,7 +10,7 @@
   	"cancel": "Cancel"
 	},
 	"home": {
-  	"headline": "Welcome to DIGITAL FOOSBALL",
+  	"headline": "Welcome to AXIOS FOOSBALL",
   	"text": "Wanna play a match?",
 		"gametype": {
  			"2": "1 vs 1",
@@ -21,6 +21,8 @@
 	"login": {
   	"headline": "Enter opponent's names.",
   	"text": "Usernames with @ are used as Twitter IDs.",
+        "homeside": "BLACK SIDE",
+        "visitorside": "YELLOW SIDE",
   	"button": {
 			"go": "Let's go"
 		}
@@ -67,6 +69,14 @@
 			"0players": "Game ended {{#goals}}{{home}}:{{visitors}} {{/goals}}. #id{{id}}{{#hashtags}} #{{.}}{{/hashtags}}",
   		"2players": "Nice one: {{#players}}{{winner}} {{/players}}won {{#goals}}{{winner}}:{{loser}} {{/goals}}versus {{#players}}{{loser}}{{/players}}. #id{{id}}{{#hashtags}} #{{.}}{{/hashtags}}",
   		"4players": "Awesome Teamplay: {{#players}}{{winner}} {{/players}}won {{#goals}}{{winner}}:{{loser}} {{/goals}}versus {{#players}}{{loser}}{{/players}}. #id{{id}}{{#hashtags}} #{{.}}{{/hashtags}}"
-		}
-	}
+		},
+        "slack": {
+                "start": "The game has started! {{#quickgame}}The players are unknown{{/quickgame}}{{^quickgame}}Players are: {{#players}}{{home}} versus {{visitors}}{{/players}}{{/quickgame}}",
+                "end": {
+			"0players": "Game ended {{#goals}}{{home}}:{{visitors}} {{/goals}}.",
+  		        "2players": "Game over! {{#players}}{{winner}} {{/players}}won {{#goals}}{{winner}}:{{loser}} {{/goals}}versus {{#players}}{{loser}}{{/players}}.",
+  		        "4players": "Team game over! {{#players}}{{winner}} {{/players}}won {{#goals}}{{winner}}:{{loser}} {{/goals}}versus {{#players}}{{loser}}{{/players}}."
+                }
+        }
+        }
 }

@@ -1,10 +1,116 @@
 var sys = require("util"),
-    http = require("http"),
+    https = require("https"),
     OAuth= require("oauth"),
     mustache = require("mustache"),
     config = require("./config").config,
     locales = require("./locales").locales,
     te = require("./tableevents").TableEvents;
+
+
+var sendSlack = function(doc, options) {
+    var req = https.request(options, function(res) {
+        sys.debug("STATUS: " + res.statusCode);
+        sys.debug("HEADERS: " + JSON.stringify(res.headers));
+        res.setEncoding('utf8');
+        res.on("data", function (chunk) {
+            sys.debug("BODY: " + chunk);
+        });
+    });
+    req.write(doc);
+    req.end();
+};
+
+te.subscribe("referee:openingwhistle", function(game) {
+
+    var quickgame = game.players.home.length === 0,
+        players = {
+            home: quickgame ? config.scoreboard.home : game.players.home.join(" " + locales.global['concat'] + " "),
+            visitors: quickgame ? config.scoreboard.visitors : game.players.visitors.join(" " + locales.global['concat'] + " ")
+        }
+
+    var data = {
+        quickgame: quickgame,
+        players: players,
+    };
+
+    var slackmsg = mustache.to_html(locales.press.slack["start"], data);
+    var slackStruct = {
+        text: slackmsg,
+        channel: config.slack.channel,
+        username: config.slack.user,
+        icon_emoji: config.slack.emoji
+    };
+
+    var slackText = JSON.stringify(slackStruct);
+
+    var options = {
+        host: config.slack.host,
+        port: config.slack.port,
+        path: config.slack.path,
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": slackText.length
+        }
+    };
+
+    try {
+        sys.debug(slackText);
+        sendSlack(slackText, options);
+
+    } catch(err) {
+        sys.debug('error: '+err);
+    }
+});
+
+
+
+te.subscribe("referee:finalwhistle", function(game) {
+
+    var goals = game.goals.reduce(function(prev, curr) {++prev[curr.scorer]; return prev; }, {home: 0, visitors: 0}),
+        home_won = goals.home > goals.visitors;
+    goals.winner = home_won ? goals.home : goals.visitors;
+    goals.loser = !home_won ? goals.home : goals.visitors;
+
+    var data = {
+        players: {
+          winner: (home_won ? game.players.home : game.players.visitors).join(" " + locales.global['concat'] + " "),
+          loser: (!home_won ? game.players.home : game.players.visitors).join(" " + locales.global['concat'] + " ")
+        },
+        goals: goals
+    }
+    var slackmsg = mustache.to_html(locales.press.slack.end[[game.players.home.concat(game.players.visitors).length, "players"].join("")], data);
+    sys.debug(slackmsg);
+    var slackStruct = {
+        text: slackmsg,
+        channel: config.slack.channel,
+        username: config.slack.user,
+        icon_emoji: config.slack.emoji
+    };
+
+    var slackText = JSON.stringify(slackStruct);
+
+    var options = {
+        host: config.slack.host,
+        port: config.slack.port,
+        path: config.slack.path,
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": slackText.length
+        }
+    };
+
+    try {
+        sys.debug(slackText);
+        sendSlack(slackText, options);
+
+    } catch(err) {
+        sys.debug('error: '+err);
+    }
+});
+
+
 
 te.subscribe("referee:finalwhistle", function(game) {
   if(!config.twitter) { return; }
