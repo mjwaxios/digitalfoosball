@@ -642,7 +642,7 @@ void loop()
 				delay(5000);
 	#endif
 
-	//delayMicroseconds(1);
+	delayMicroseconds(1);
 	//checkCount = (checkCount + 1) % 2000000L;
 }
 
