@@ -71,7 +71,7 @@
   		"4players": "Awesome Teamplay: {{#players}}{{winner}} {{/players}}won {{#goals}}{{winner}}:{{loser}} {{/goals}}versus {{#players}}{{loser}}{{/players}}. #id{{id}}{{#hashtags}} #{{.}}{{/hashtags}}"
 		},
         "slack": {
-                "start": "The game has started! {{#quickgame}}The players are unknown{{/quickgame}}{{^quickgame}}Players are: {{#players}}{{home}} versus {{visitors}}{{/players}}{{/quickgame}}",
+                "start": "A new game has started! {{#quickgame}}The players are unknown{{/quickgame}}{{^quickgame}}Players are: {{#players}}{{home}} versus {{visitors}}{{/players}}{{/quickgame}}",
                 "end": {
 			"0players": "Game ended {{#goals}}{{home}}:{{visitors}} {{/goals}}.",
   		        "2players": "Game over! {{#players}}{{winner}} {{/players}}won {{#goals}}{{winner}}:{{loser}} {{/goals}}versus {{#players}}{{loser}}{{/players}}.",
