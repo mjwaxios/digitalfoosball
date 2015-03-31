@@ -1,4 +1,5 @@
 var sys = require("util"),
+    http = require("http"),
     https = require("https"),
     OAuth= require("oauth"),
     mustache = require("mustache"),
