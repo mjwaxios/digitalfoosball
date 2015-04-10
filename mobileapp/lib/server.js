@@ -1,3 +1,4 @@
+delete require.cache[require.resolve("./locales")]
 var http = require("http"),
     sys = require("util"),
     socketio = require("socket.io"),

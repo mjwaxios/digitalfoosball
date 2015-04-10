@@ -1,3 +1,4 @@
+delete require.cache[require.resolve("./locales")]
 var sys = require("util"),
     http = require("http"),
     https = require("https"),

@@ -1,3 +1,4 @@
+delete require.cache[require.resolve("./locales")]
 var config = require("./config").config,
     sys = require("util"),
     locales = require("./locales").locales,
