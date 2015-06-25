@@ -14,7 +14,7 @@ df.app = (function() {
     if (names.length == 1)
       return names[0];
     else if (names.length == 2)
-      return names[0] + " + " + names[1];
+      return names[0] + " & " + names[1];
   };
 
   var displayData = function(msg) {
