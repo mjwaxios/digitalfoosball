@@ -10,6 +10,29 @@ df.app = (function() {
     }
   };
 
+  var formatNames = function(names) {
+    if (names.length == 1)
+      return names[0];
+    else if (names.length == 2)
+      return names[0] + " & " + names[1];
+  };
+
+  var displayData = function(msg) {
+    var page = msg.view;
+    if (page == "scoreboard") {
+      var num_players = msg.game.players.home.length;
+      if (num_players > 0) {
+        var home_names = formatNames(msg.game.players.home);
+        var visitor_names = formatNames(msg.game.players.visitors);
+        $("#nameshome").html(home_names);
+        $("#namesvisitors").html(visitor_names);
+      } else {
+        $("#nameshome").html(home_default);
+        $("#namesvisitors").html(visitors_default);
+      }
+    }
+  }
+
   var actionIfPermitted = function(action) {
     if (!hostId || hostId === clientId) {
       action();
@@ -144,6 +167,7 @@ df.app = (function() {
 
   df.subscribe("socket:message", function(msg) {
     viewPage(msg.view);
+    displayData(msg);
   });
 
   df.subscribe("socket:clientId", function(id) {

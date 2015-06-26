@@ -75,10 +75,15 @@
 				<a href="#summary" class="cancel js_abort">{{locales.toolbar.cancel}}</a>
 			</div>
             {{#scoreboard}}
+            <script>
+              //save scoreboard defaults
+              home_default = "{{home}}"
+              visitors_default = "{{visitors}}"
+            </script>
             <dl class="board {{#inverted}}inverted{{/inverted}}">
-                <dt>{{home}}</dt>
+                <dt id="nameshome">{{home}}</dt>
                 <dd id="scorehome" class="scorecard full"></dd>
-                <dt>{{visitors}}</dt>
+                <dt id="namesvisitors">{{visitors}}</dt>
                 <dd id="scorevisitors" class="scorecard full"></dd>
             </dl>
             {{/scoreboard}}
