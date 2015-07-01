@@ -21,8 +21,8 @@
 	"login": {
   	"headline": "Enter opponent's names.",
   	"text": "Usernames with @ are used as Twitter IDs.",
-        "homeside": "BLACK SIDE",
-        "visitorside": "YELLOW SIDE",
+        "homeside": "HOME (BLACK) SIDE",
+        "visitorside": "VISITOR (YELLOW) SIDE",
   	"button": {
 			"go": "Let's go"
 		}
