@@ -16,11 +16,16 @@
 // Pins
 #define IR0PIN 2
 #define IR1PIN 3
+#define LEDPIN 6
 #define BUZZERPIN 9
 
 // Yun
 #include <Process.h>
 #include <FileIO.h>
+
+//NeoPixels
+#include <Adafruit_NeoPixel.h>
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(150, LEDPIN, NEO_GRB + NEO_KHZ800);
 
 #define HOMENAME "/tmp/home.sh"
 #define VISITORSNAME "/tmp/visitors.sh"
@@ -28,6 +33,8 @@
 #define BUZZERFREQ 880   // A5
 #define BUZZERFREQ2 440  //A4
 #define BUZZERTIME 400
+
+enum {LYellow, LRed, LBlue, LBlack} LedColor;
 
 //****************************************************************
 // Globals
@@ -100,6 +107,9 @@ void uploadScript() {
 /**************************************************************************/
 void setup(void) 
 {
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
+
   // Setup the Yun Bridge, Console, and FileIO
   Bridge.begin();
   Console.begin();
@@ -122,6 +132,48 @@ void setup(void)
 }
 
 /**************************************************************************/
+// Fill in all Leds with a color
+/**************************************************************************/
+void FillAll(byte red, byte green, byte blue) {
+  for (int x=0; x < 150; x++) {
+    strip.setPixelColor(x, red, green, blue);
+  }
+  strip.show();  
+}
+
+/**************************************************************************/
+// Fill in all Red
+/**************************************************************************/
+void Red() {
+  LedColor = LRed;
+  FillAll(255, 0, 0);
+}
+
+/**************************************************************************/
+// Fill in all Blue
+/**************************************************************************/
+void Blue() {
+  LedColor = LBlue;
+  FillAll(0, 0, 255);
+}
+
+/**************************************************************************/
+// Fill in all Yellow
+/**************************************************************************/
+void Yellow() {
+  LedColor = LYellow;
+  FillAll(255, 255, 0);
+}
+
+/**************************************************************************/
+// Fill in all Black (Off)
+/**************************************************************************/
+void Black() {
+  LedColor = LBlack;
+  FillAll(0, 0, 0);
+}
+
+/**************************************************************************/
 /*
     Arduino loop function, called once 'setup' is complete (your own code
     should go here)
@@ -130,28 +182,56 @@ void setup(void)
 void loop(void) 
 {
   Process onGoal;
-
+  static int seconds = -1;       // Start Right away
+  static long lasttime = 0;
+  static long colortime = -1;  // Time we last turned on color
+  long curtime = millis();
+  
+  if (curtime >= (lasttime + 1000)) {
+    lasttime = curtime;
+    seconds++;
+  }
+  
   // Check Goal State
   // Should be safe to use Goal without turning off interrupts
   if (YGoals > lastYGoals) {
+    if (LedColor == LYellow) {
+      Red();
+    } else {
+      Yellow();
+    }
+    colortime = curtime;
     lastYGoals = YGoals;
     Console.print("YGoals: ");
     Console.println(lastYGoals);
     onGoal.begin(VISITORSNAME);
     onGoal.run();
     tone(BUZZERPIN, BUZZERFREQ, BUZZERTIME);
+    Yellow();
   } // Goal
 
   // Check Goal State
   // Should be safe to use Goal without turning off interrupts
   if (BGoals > lastBGoals) {
+    if (LedColor == LBlue) {
+      Red();
+    } else {
+      Blue();
+    }
+    colortime = curtime;
     lastBGoals = BGoals;
     Console.print("BGoals: ");
     Console.println(lastBGoals);
     onGoal.begin(HOMENAME);
     onGoal.run();
     tone(BUZZERPIN, BUZZERFREQ2, BUZZERTIME);
+    Blue();
   } // Goal
+
+  if (curtime >= colortime + 10000) {
+    colortime = -1;
+    Black();
+  }
 
   delay(100);  // Just so we don't spin
 } // loop
