@@ -202,7 +202,7 @@ void loop(void)
   long curtime = millis();
   
   if (curtime >= (lasttime + 1000)) {
-    lasttime = curtime;
+    lasttime += 1000;
     seconds++;
   }
   
@@ -234,8 +234,9 @@ void loop(void)
     Blue();
   } // Goal
 
-
-  if (curtime >= colortime + 2000) {
+  static int lastseconds = 0;
+  if ((curtime >= colortime + 2000) && (seconds > lastseconds)) {
+    lastseconds = seconds;
     if (LedColor == LYellow) {
       Fill10(seconds, 32, 32, 0);      
     }
