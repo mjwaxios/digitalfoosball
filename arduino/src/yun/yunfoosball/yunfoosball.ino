@@ -142,6 +142,20 @@ void FillAll(byte red, byte green, byte blue) {
 }
 
 /**************************************************************************/
+// Fill in all Leds with a color
+/**************************************************************************/
+void Fill10(int seconds, byte red, byte green, byte blue) {
+  for (int x=0; x < 150; x++) {
+    if (((x+seconds) % 10) == 0) {
+      strip.setPixelColor(x, red, green, blue);
+    } else {
+      strip.setPixelColor(x, 0, 0, 0);     
+    }
+  }
+  strip.show();  
+}
+
+/**************************************************************************/
 // Fill in all Red
 /**************************************************************************/
 void Red() {
@@ -195,11 +209,7 @@ void loop(void)
   // Check Goal State
   // Should be safe to use Goal without turning off interrupts
   if (YGoals > lastYGoals) {
-    if (LedColor == LYellow) {
-      Red();
-    } else {
-      Yellow();
-    }
+    Red();
     colortime = curtime;
     lastYGoals = YGoals;
     Console.print("YGoals: ");
@@ -213,11 +223,7 @@ void loop(void)
   // Check Goal State
   // Should be safe to use Goal without turning off interrupts
   if (BGoals > lastBGoals) {
-    if (LedColor == LBlue) {
-      Red();
-    } else {
-      Blue();
-    }
+    Red();
     colortime = curtime;
     lastBGoals = BGoals;
     Console.print("BGoals: ");
@@ -228,7 +234,17 @@ void loop(void)
     Blue();
   } // Goal
 
-  if (curtime >= colortime + 10000) {
+
+  if (curtime >= colortime + 2000) {
+    if (LedColor == LYellow) {
+      Fill10(seconds, 32, 32, 0);      
+    }
+    if (LedColor == LBlue) {
+      Fill10(-seconds, 0, 0, 32);            
+    }
+  }
+
+  if (curtime >= colortime + 60000) {
     colortime = -1;
     Black();
   }
