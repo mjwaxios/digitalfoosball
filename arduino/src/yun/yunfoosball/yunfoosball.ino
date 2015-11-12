@@ -121,14 +121,17 @@ void setup(void)
   // Setup Light Sensor Interrupt
   // Set input pins to internal Pullup
   pinMode(IR0PIN, INPUT_PULLUP);
-  attachInterrupt(0, InterruptZero, FALLING);
   pinMode(IR1PIN, INPUT_PULLUP);
-  attachInterrupt(1, InterruptOne, FALLING);
 
   // Setup Buzzer
   pinMode(BUZZERPIN, OUTPUT);
 
+  // Create the Yun Scripts to post goals
   uploadScript();
+
+  // Everything is setup, so attach to the interrupts
+  attachInterrupt(0, InterruptZero, FALLING);
+  attachInterrupt(1, InterruptOne, FALLING);
 }
 
 /**************************************************************************/
@@ -144,9 +147,9 @@ void FillAll(byte red, byte green, byte blue) {
 /**************************************************************************/
 // Fill in all Leds with a color
 /**************************************************************************/
-void Fill10(int seconds, byte red, byte green, byte blue) {
+void Fill10(int seconds, int mod, byte red, byte green, byte blue) {
   for (int x=0; x < 150; x++) {
-    if (((x+seconds) % 10) == 0) {
+    if (((x+seconds) % mod) == 0) {
       strip.setPixelColor(x, red, green, blue);
     } else {
       strip.setPixelColor(x, 0, 0, 0);     
@@ -196,14 +199,19 @@ void Black() {
 void loop(void) 
 {
   Process onGoal;
-  static int seconds = -1;       // Start Right away
+  static long seconds = -1;       // Start Right away
   static long lasttime = 0;
-  static long colortime = -1;  // Time we last turned on color
+  static long colortime = -1;     // Time we last turned on color
+  static long lastseconds = 0; 
   long curtime = millis();
   
   if (curtime >= (lasttime + 1000)) {
     lasttime += 1000;
     seconds++;
+    if (seconds < 0) {
+      seconds = 0;
+      lastseconds = 0;
+    }
   }
   
   // Check Goal State
@@ -234,14 +242,14 @@ void loop(void)
     Blue();
   } // Goal
 
-  static int lastseconds = 0;
   if ((curtime >= colortime + 2000) && (seconds > lastseconds)) {
     lastseconds = seconds;
+    int m = (curtime - colortime) / 1000;
     if (LedColor == LYellow) {
-      Fill10(seconds, 32, 32, 0);      
+      Fill10(seconds, m, 32, 32, 0);      
     }
     if (LedColor == LBlue) {
-      Fill10(-seconds, 0, 0, 32);            
+      Fill10(-seconds, m, 0, 0, 32);            
     }
   }
 
